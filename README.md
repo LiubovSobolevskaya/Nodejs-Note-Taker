@@ -19,8 +19,6 @@ Run
 ```
 npm install
 ```
-## Example of a logo created by this program
-![logo](examples/logo_example.svg)
 
 ## Author Info
 
