@@ -2,6 +2,7 @@
 
 9th assignment of UCB Extension Web Development Bootcamp
 
+Visit the deployed on Heroku [site](https://note-taker-nodejs-impl.herokuapp.com/notes).
 ## Description
 
 If you use the Note Taker app and open it, you will see a page with a link to your notes. Clicking on this link will take you to a page where your existing notes will be displayed on the left side and empty fields to add a new note's title and text will be shown on the right side. Once you fill in these fields, a Save icon will appear at the top of the page. If you click on the Save icon, your new note will be saved and added to the list of existing notes on the left. You can view an existing note by clicking on it from the left-hand column. If you want to create a new note, you can click on the Write icon in the navigation at the top of the page, and the same empty fields to enter a new note's title and text will appear on the right side.
@@ -19,6 +20,9 @@ Run
 ```
 npm install
 ```
+
+## Functionality and appearance
+![](./imgs/notestaker.gif)
 
 ## Author Info
 

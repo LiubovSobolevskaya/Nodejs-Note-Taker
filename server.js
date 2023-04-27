@@ -3,12 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const {readAndAppend, readFromFile} = require('./utils');
-const { response } = require('express');
 
 const PORT = process.env.PORT || 3001;
-
+const dbFileName = './db/db.json';
 const app = express();
-
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -24,9 +22,8 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-    readFromFile('./db/db.json')
+    readFromFile(dbFileName)
     .then((data) => {
-        //console.log(Array.isArray(JSON.parse(data)));
         try {
             const parsedData = JSON.parse(data);
             res.json(parsedData);
@@ -47,7 +44,7 @@ app.post('/api/notes', (req, res) => {
             text,
             id: uuidv4(),
         };
-        readAndAppend(newNote, './db/db.json');
+        readAndAppend(newNote, dbFileName);
 
         res.json('Data appended successfully');   
     }
@@ -63,10 +60,9 @@ app.delete('/api/notes/:id', (req, res) => {
     .then((response) => {
         const result = response.filter((note) => note.id !== nodeId);
         fs.writeFile('./db/db.json', JSON.stringify(result, null, 4), (err) =>
-           err ? console.error(err) : console.info('\nData written to ./db/db.json')
+           err ? console.error(err) : console.info(`\nData written to ${dbFileName}}`)
         );
         res.json(`Item with id ${nodeId} has been removed`);
-
     });
 });
 
