@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const {readAndAppend, readFromFile} = require('./utils');
+const { readAndAppend } = require('./utils');
 
 const PORT = process.env.PORT || 3001;
 const dbFileName = './db/db.json';
@@ -22,17 +22,20 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-    readFromFile(dbFileName)
-    .then((data) => {
-        try {
-            const parsedData = JSON.parse(data);
-            res.json(parsedData);
-        }
-        catch{
-           return res.json([]);
+    fs.readFile(dbFileName, 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+        } 
+        else {
+          try {
+            const parsedData = JSON.parse(data);  
+            return res.json(parsedData);
+          }
+          catch{
+            return res.json([]);
+          }
         }
     });
-
 });
 
 app.post('/api/notes', (req, res) => {
@@ -55,14 +58,17 @@ app.post('/api/notes', (req, res) => {
 
 app.delete('/api/notes/:id', (req, res) => {
     const nodeId = req.params.id;
-    readFromFile('./db/db.json')
-    .then((data) => JSON.parse(data))
-    .then((response) => {
-        const result = response.filter((note) => note.id !== nodeId);
-        fs.writeFile('./db/db.json', JSON.stringify(result, null, 4), (err) =>
-           err ? console.error(err) : console.info(`\nData written to ${dbFileName}}`)
-        );
-        res.json(`Item with id ${nodeId} has been removed`);
+    fs.readFile(dbFileName, 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+            const parsedData = JSON.parse(data);  
+            const result = parsedData.filter((note) => note.id !== nodeId);
+            fs.writeFile(dbFileName, JSON.stringify(result, null, 4), (err) =>
+               err ? console.error(err) : console.info(`\nData written to ${dbFileName}`)
+            );
+            return res.json(`Item with id: ${nodeId} has been removed`); 
+        }
     });
 });
 
