@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 const {readAndAppend, readFromFile} = require('./utils');
+const { response } = require('express');
 
 const PORT = process.env.PORT || 3001;
 
@@ -22,20 +24,31 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
+    readFromFile('./db/db.json')
+    .then((data) => {
+        //console.log(Array.isArray(JSON.parse(data)));
+        try {
+            const parsedData = JSON.parse(data);
+            res.json(parsedData);
+        }
+        catch{
+           return res.json([]);
+        }
+    });
+
 });
 
 app.post('/api/notes', (req, res) => {
     const { title, text} = req.body;
-    console.log(req.body);
-    // If all the required properties are present
+
     if (title && text){
         const newNote = {
             title,
-            text
+            text,
+            id: uuidv4(),
         };
         readAndAppend(newNote, './db/db.json');
-        
+
         res.json('Data appended successfully');   
     }
     else{
@@ -43,6 +56,25 @@ app.post('/api/notes', (req, res) => {
     }
 });
 
+app.delete('/api/notes/:id', (req, res) => {
+    const nodeId = req.params.id;
+    readFromFile('./db/db.json')
+    .then((data) => JSON.parse(data))
+    .then((response) => {
+        const result = response.filter((note) => note.id !== nodeId);
+        fs.writeFile('./db/db.json', JSON.stringify(result, null, 4), (err) =>
+           err ? console.error(err) : console.info('\nData written to ./db/db.json')
+        );
+        res.json(`Item with id ${nodeId} has been removed`);
+
+    });
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`);
 });
+
