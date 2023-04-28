@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const { readAndAppend } = require('./utils');
+const { readAndAppend } = require('./utils.js');
 
 // Setting up the port number and database file name
 const PORT = process.env.PORT || 3001;
