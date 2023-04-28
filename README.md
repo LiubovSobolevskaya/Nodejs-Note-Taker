@@ -31,3 +31,4 @@ npm install
 * [Github](https://github.com/LiubovSobolevskaya)
 * [Kaggle](https://www.kaggle.com/lyubovsobolevskaya)
 
+I would like to express my gratitude to [Armando Osorio](https://www.linkedin.com/in/mandoosorio/) for helping me to handle empty json file exception.  
